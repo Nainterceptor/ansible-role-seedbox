@@ -1,2 +1,17 @@
 ---
 # handlers file for Nainterceptor.seedbox
+- name: "Stop Transmission"
+  service:
+    name: transmission-daemon
+    state: stopped
+
+- name: "Start Transmission"
+  service:
+    name: transmission-daemon
+    state: started
+
+- name: "Enable Transmission"
+  service:
+    name: transmission-daemon
+    state: started
+    enabled: yes

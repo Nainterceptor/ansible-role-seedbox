@@ -1,2 +1,23 @@
 ---
 # tasks file for Nainterceptor.seedbox
+- name: "Install required packages"
+  apt: state=installed pkg={{ item }}
+  with_items:
+      - transmission-daemon
+  notify:
+    - Stop Transmission
+
+- name: "Configure Transmission"
+  template: src=../files/transmission-settings.json.j2 dest=/etc/transmission-daemon/settings.json
+
+- name: "Create download dir"
+  file: path={{ download_dir }} owner=debian-transmission group=debian-transmission state=directory recurse=yes mode=0770
+
+- name: "Create incomplete dir"
+  file: path={{ incomplete_dir }} owner=debian-transmission group=debian-transmission state=directory recurse=yes mode=0770
+
+- name: "Ensure user exist"
+  user: name={{ rpc_username }} password={{ user_password }} groups=debian-transmission append=yes shell=/bin/bash home={{ home_dir }}
+  notify:
+    - Start Transmission
+    - Enable Transmission
